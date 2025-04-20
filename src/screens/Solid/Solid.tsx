@@ -309,21 +309,11 @@ export function Solid() {
           </div>
 
           {/* Character reactions */}
-          <div className="inline-flex items-center gap-[9px] absolute top-[903px] left-[526px]">
+          <div className="inline-flex items-center gap-[9px] absolute top-[960px] left-[526px]">
             <img
-              className="relative w-[63.5px] h-[45.25px] mt-[-0.81px]"
+              className="relative h-[45.25px]"
               alt="Element"
-              src="/img/1.svg"
-            />
-            <img
-              className="relative w-[47.18px] h-[46.14px] mt-[-1.25px]"
-              alt="Image"
-              src="/img/image-4.svg"
-            />
-            <img
-              className="relative w-[59.5px] h-[45.63px] mt-[-1.00px] mr-[-1.25px]"
-              alt="Element"
-              src="/img/2.svg"
+              src="/img/friends.svg"
             />
           </div>
 

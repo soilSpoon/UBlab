@@ -54,25 +54,11 @@ export function Landing() {
             </div>
           </div>
 
-          <footer className="flex flex-col w-[208.98px] gap-[8.33px] items-center mt-20">
+          <footer className="flex flex-col w-[250px] gap-[8.33px] items-center mt-20">
             <div className="relative w-[96.16px] h-[43.16px]">
               <div className="relative w-24 h-[43px]">
                 {/* Logo circles */}
-                <div className="absolute w-[43px] h-[43px] top-0 left-0 rounded-full bg-[#4a35ff]"></div>
-                <div className="absolute w-[43px] h-[43px] top-0 left-6 rounded-full bg-[#ff6e39]"></div>
-                <div className="absolute w-[43px] h-[43px] top-0 left-[52px] rounded-full bg-[#ffc300]"></div>
-
-                {/* Small details */}
-                <div className="absolute w-1 h-1 top-[17px] left-[7px] rounded-full bg-white"></div>
-                <div className="absolute w-1 h-1 top-[17px] left-4 rounded-full bg-white"></div>
-
-                {/* Logo text placeholder */}
-                <div className="absolute w-[69px] h-[17px] top-[13px] left-[27px] text-white font-bold text-xs">
-                  UB Lab
-                </div>
-
-                {/* Small line */}
-                <div className="absolute w-[11px] h-[1px] top-[23px] left-[9px] bg-white"></div>
+                <img className="h-[43px]" alt="Logo" src="/img/logo.svg" />
               </div>
             </div>
 
