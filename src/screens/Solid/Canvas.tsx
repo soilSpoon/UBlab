@@ -1,14 +1,5 @@
 import { useState, useEffect, useRef, useCallback, FC } from "react";
 import code from "./code.txt?raw";
-import { main } from "./prompt";
-import { LiveError, LivePreview, LiveProvider } from "react-live";
-
-const scope = {
-  useRef,
-  useState,
-  useEffect,
-  useCallback,
-};
 
 console.log(code);
 
@@ -411,9 +402,10 @@ const DEFAULT_ACTIVE_COMPOUNDS: CompoundState[] = [
 ];
 
 export function Canvas({ temperature = 25 }: { temperature?: number }) {
-  if (temperature == 0) {
-    temperature = 0.1;
+  if (temperature <= 0) {
+    temperature = 0;
   }
+
   const speed = temperature / 10;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -424,7 +416,7 @@ export function Canvas({ temperature = 25 }: { temperature?: number }) {
   );
   const [simulationIons, setSimulationIons] = useState<Ion[]>([]);
   const [precipitates, setPrecipitates] = useState<Precipitate[]>([]);
-  const [isRunning, setIsRunning] = useState(true);
+  const isRunning = useState(true);
   const [containerSize, setContainerSize] = useState({
     width: 690,
     height: 263,
