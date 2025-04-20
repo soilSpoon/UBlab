@@ -214,10 +214,13 @@ export function Solid() {
                     e.currentTarget.query.value = "";
 
                     const result = await main(query, JSON.stringify(settings));
+                    const correctedResult = result
+                      ?.replace("```json", "")
+                      .replace("```", "");
 
-                    console.log(query, result);
+                    console.log(query, correctedResult);
                     if (result) {
-                      setSettings(JSON.parse(result));
+                      setSettings(JSON.parse(correctedResult));
                     }
 
                     return false;
