@@ -13,9 +13,11 @@ export async function main(
 ) {
   console.log("code", code);
   const credentials = {
-    accessKeyId: import.meta.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: import.meta.env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY_ID,
+    secretAccessKey: import.meta.env.VITE_AWS_SECRET_ACCESS_KEY,
   };
+
+  console.log(credentials);
 
   // Bedrock 클라이언트 생성 (기본 자격 증명 체인 사용)
   const client = new BedrockRuntimeClient({
