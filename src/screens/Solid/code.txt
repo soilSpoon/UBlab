@@ -1,0 +1,1091 @@
+
+// 타입/인터페이스 정의
+interface CompoundState {
+  name: string;
+  amount: number;
+}
+interface Ion {
+  id: string;
+  type: string;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  color: string;
+  charge: number;
+  compound: string;
+}
+interface Precipitate extends Ion {
+  name: string;
+  colorName: string;
+  settled: boolean;
+}
+
+// Ion information: Defines properties for each ion type
+const ions: Record<string, { charge: number; color: string }> = {
+  // Cations (Positive Ions)
+  "Na+": { charge: 1, color: "#FF9999" },
+  "K+": { charge: 1, color: "#FF9999" },
+  "Ca2+": { charge: 2, color: "#FF9999" },
+  "Ba2+": { charge: 2, color: "#FF9999" },
+  "Pb2+": { charge: 2, color: "#FF9999" },
+  "Ag+": { charge: 1, color: "#FF9999" },
+  "Cu2+": { charge: 2, color: "#FF9999" },
+
+  // Anions (Negative Ions)
+  "Cl-": { charge: -1, color: "#9999FF" },
+  "S2-": { charge: -2, color: "#9999FF" },
+  "NO3-": { charge: -1, color: "#9999FF" },
+  "SO42-": { charge: -2, color: "#9999FF" },
+  "CO32-": { charge: -2, color: "#9999FF" },
+  "I-": { charge: -1, color: "#9999FF" },
+  "Br-": { charge: -1, color: "#9999FF" },
+};
+
+// Soluble compound information
+const compounds: Record<
+  string,
+  { cation: string; anion: string; precipitate: boolean }
+> = {
+  NaCl: { cation: "Na+", anion: "Cl-", precipitate: false },
+  KCl: { cation: "K+", anion: "Cl-", precipitate: false },
+  CaCl2: { cation: "Ca2+", anion: "Cl-", precipitate: false },
+  BaCl2: { cation: "Ba2+", anion: "Cl-", precipitate: false },
+  "Pb(NO3)2": { cation: "Pb2+", anion: "NO3-", precipitate: false },
+  AgNO3: { cation: "Ag+", anion: "NO3-", precipitate: false },
+  Na2S: { cation: "Na+", anion: "S2-", precipitate: false },
+  K2S: { cation: "K+", anion: "S2-", precipitate: false },
+  NaNO3: { cation: "Na+", anion: "NO3-", precipitate: false },
+  KNO3: { cation: "K+", anion: "NO3-", precipitate: false },
+  "Ca(NO3)2": { cation: "Ca2+", anion: "NO3-", precipitate: false },
+  "Ba(NO3)2": { cation: "Ba2+", anion: "NO3-", precipitate: false },
+  Na2SO4: { cation: "Na+", anion: "SO42-", precipitate: false },
+  K2SO4: { cation: "K+", anion: "SO42-", precipitate: false },
+  CuSO4: { cation: "Cu2+", anion: "SO42-", precipitate: false },
+  Na2CO3: { cation: "Na+", anion: "CO32-", precipitate: false },
+  K2CO3: { cation: "K+", anion: "CO32-", precipitate: false },
+  NaI: { cation: "Na+", anion: "I-", precipitate: false },
+  KI: { cation: "K+", anion: "I-", precipitate: false },
+  NaBr: { cation: "Na+", anion: "Br-", precipitate: false },
+  KBr: { cation: "K+", anion: "Br-", precipitate: false },
+};
+
+// Precipitate combination information with stoichiometry
+const precipitateInfo = {
+  PbCl2: {
+    cation: "Pb2+",
+    anion: "Cl-",
+    color: "#FFFFFF",
+    colorName: "흰색",
+    cationCount: 1,
+    anionCount: 2,
+  },
+  AgCl: {
+    cation: "Ag+",
+    anion: "Cl-",
+    color: "#FFFFFF",
+    colorName: "흰색",
+    cationCount: 1,
+    anionCount: 1,
+  },
+  PbS: {
+    cation: "Pb2+",
+    anion: "S2-",
+    color: "#000000",
+    colorName: "검은색",
+    cationCount: 1,
+    anionCount: 1,
+  },
+  Ag2S: {
+    cation: "Ag+",
+    anion: "S2-",
+    color: "#000000",
+    colorName: "검은색",
+    cationCount: 2,
+    anionCount: 1,
+  },
+  CuS: {
+    cation: "Cu2+",
+    anion: "S2-",
+    color: "#000000",
+    colorName: "검은색",
+    cationCount: 1,
+    anionCount: 1,
+  },
+  CaSO4: {
+    cation: "Ca2+",
+    anion: "SO42-",
+    color: "#FFFFFF",
+    colorName: "흰색",
+    cationCount: 1,
+    anionCount: 1,
+  },
+  BaSO4: {
+    cation: "Ba2+",
+    anion: "SO42-",
+    color: "#FFFFFF",
+    colorName: "흰색",
+    cationCount: 1,
+    anionCount: 1,
+  },
+  PbSO4: {
+    cation: "Pb2+",
+    anion: "SO42-",
+    color: "#FFFFFF",
+    colorName: "흰색",
+    cationCount: 1,
+    anionCount: 1,
+  },
+  Ag2SO4: {
+    cation: "Ag+",
+    anion: "SO42-",
+    color: "#FFFFFF",
+    colorName: "흰색",
+    cationCount: 2,
+    anionCount: 1,
+  },
+  CaCO3: {
+    cation: "Ca2+",
+    anion: "CO32-",
+    color: "#FFFFFF",
+    colorName: "흰색",
+    cationCount: 1,
+    anionCount: 1,
+  },
+  BaCO3: {
+    cation: "Ba2+",
+    anion: "CO32-",
+    color: "#FFFFFF",
+    colorName: "흰색",
+    cationCount: 1,
+    anionCount: 1,
+  },
+  PbCO3: {
+    cation: "Pb2+",
+    anion: "CO32-",
+    color: "#FFFFFF",
+    colorName: "흰색",
+    cationCount: 1,
+    anionCount: 1,
+  },
+  Ag2CO3: {
+    cation: "Ag+",
+    anion: "CO32-",
+    color: "#FFFF99",
+    colorName: "연한 노란색",
+    cationCount: 2,
+    anionCount: 1,
+  },
+  PbI2: {
+    cation: "Pb2+",
+    anion: "I-",
+    color: "#FFFF00",
+    colorName: "노란색",
+    cationCount: 1,
+    anionCount: 2,
+  },
+  AgI: {
+    cation: "Ag+",
+    anion: "I-",
+    color: "#FFFF00",
+    colorName: "노란색",
+    cationCount: 1,
+    anionCount: 1,
+  },
+  PbBr2: {
+    cation: "Pb2+",
+    anion: "Br-",
+    color: "#FFFFFF",
+    colorName: "흰색",
+    cationCount: 1,
+    anionCount: 2,
+  },
+  AgBr: {
+    cation: "Ag+",
+    anion: "Br-",
+    color: "#FFFF99",
+    colorName: "연한 노란색",
+    cationCount: 1,
+    anionCount: 1,
+  },
+};
+
+// Helper component to render chemical formulas with subscripts in React elements
+const ChemFormula: FC<{ formula: string }> = ({ formula }) => {
+  const parts = formula.split(/(\d+|[+\-]\d*|\d*[+\-])/); // Split by numbers or charge signs
+  return (
+    <>
+      {parts.map((part, index) => {
+        if (!part) return null; // Skip empty strings
+        if (/^\d+$/.test(part)) {
+          // Number is likely subscript
+          // Check previous part to avoid making charge numbers subscript
+          const prevPart = parts[index - 1];
+          if (prevPart && /[a-zA-Z)]$/.test(prevPart)) {
+            // If previous part ends with letter or parenthesis
+            return <sub key={index}>{part}</sub>;
+          } else {
+            return part; // Part of charge or coefficient
+          }
+        } else if (/[+\-](\d*)$/.test(part) || /^\d*[+\-]$/.test(part)) {
+          // Charge is superscript
+          // Extract text and charge parts if combined (e.g., "SO42-")
+          const match = part.match(/([a-zA-Z]+)(\d*[+\-]?)$/);
+          if (match && match[1] && match[2]) {
+            return (
+              <>
+                <ChemFormula formula={match[1]} />
+                <sup key={index}>{match[2]}</sup>
+              </>
+            );
+          }
+          return <sup key={index}>{part}</sup>;
+        }
+        return part; // Regular text
+      })}
+    </>
+  );
+};
+
+// Function to get a contrasting text color (black or white) based on background hex color
+function getContrastYIQ(hexcolor: string): string {
+  hexcolor = hexcolor.replace("#", "");
+  const r = parseInt(hexcolor.substr(0, 2), 16);
+  const g = parseInt(hexcolor.substr(2, 2), 16);
+  const b = parseInt(hexcolor.substr(4, 2), 16);
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 128 ? "#000000" : "#FFFFFF";
+}
+
+// Function to draw formatted text (sub/superscripts) on Canvas
+function drawFormattedText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  baseFontSize: number
+): void {
+  ctx.save(); // Save current context state
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle"; // Base alignment
+
+  const subFontSize = baseFontSize * 0.7; // Font size for sub/superscripts
+  const superFontSize = baseFontSize * 0.7;
+  const subOffset = baseFontSize * 0.3; // Vertical offset for subscripts
+  const superOffset = -baseFontSize * 0.4; // Vertical offset for superscripts
+
+  let currentX = x; // Start X position (will be adjusted for centered text later)
+  const segments = []; // Store segments to calculate total width
+
+  // Simple parsing: Look for numbers possibly following letters (subscript)
+  // or charge signs possibly following numbers/letters (superscript)
+  // This is a simplified parser and might have edge cases.
+  const regex = /([A-Za-z]+)(\d+)|(\d+)([+\-])|([+\-])/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    // Add preceding normal text
+    if (match.index > lastIndex) {
+      segments.push({
+        type: "normal",
+        text: text.substring(lastIndex, match.index),
+      });
+    }
+
+    if (match[1] && match[2]) {
+      // Letter(s) followed by number (potential subscript) e.g., Cl2, SO4
+      segments.push({ type: "normal", text: match[1] });
+      segments.push({ type: "subscript", text: match[2] });
+    } else if (match[3] && match[4]) {
+      // Number followed by charge sign (superscript) e.g., 2+
+      segments.push({ type: "normal", text: match[3] }); // Keep number normal size for charge like 2+
+      segments.push({ type: "superscript", text: match[4] });
+    } else if (match[5]) {
+      // Lone charge sign (superscript) e.g., + or -
+      segments.push({ type: "superscript", text: match[5] });
+    } else {
+      // Fallback for unparsed parts (shouldn't happen often with this regex)
+      segments.push({ type: "normal", text: match[0] });
+    }
+    lastIndex = regex.lastIndex;
+  }
+
+  // Add any remaining normal text
+  if (lastIndex < text.length) {
+    segments.push({ type: "normal", text: text.substring(lastIndex) });
+  }
+
+  // Calculate total width for centering
+  let totalWidth = 0;
+  segments.forEach((segment) => {
+    if (segment.type === "subscript") {
+      ctx.font = `${subFontSize}px Arial`;
+    } else if (segment.type === "superscript") {
+      ctx.font = `${superFontSize}px Arial`;
+    } else {
+      ctx.font = `bold ${baseFontSize}px Arial`; // Bold for normal parts
+    }
+    totalWidth += ctx.measureText(segment.text).width;
+  });
+
+  // Adjust starting X for centering
+  currentX = x - totalWidth / 2;
+
+  // Draw segments
+  segments.forEach((segment) => {
+    let segmentY = y;
+    if (segment.type === "subscript") {
+      ctx.font = `${subFontSize}px Arial`;
+      segmentY += subOffset;
+    } else if (segment.type === "superscript") {
+      ctx.font = `${superFontSize}px Arial`;
+      segmentY += superOffset;
+    } else {
+      ctx.font = `bold ${baseFontSize}px Arial`; // Bold for normal parts
+    }
+    ctx.fillText(
+      segment.text,
+      currentX + ctx.measureText(segment.text).width / 2,
+      segmentY
+    ); // Draw centered within its segment space
+    currentX += ctx.measureText(segment.text).width; // Move X for the next segment
+  });
+
+  ctx.restore(); // Restore context state
+}
+
+// Function to calculate distance
+function calculateDistance(
+  obj1: { x: number; y: number },
+  obj2: { x: number; y: number }
+): number {
+  return Math.sqrt(Math.pow(obj1.x - obj2.x, 2) + Math.pow(obj1.y - obj2.y, 2));
+}
+
+// Constants for simulation parameters
+const BASE_IONS_PER_UNIT = 1;
+const GRAVITY = 0.1;
+const FRICTION = 0.98;
+const PRECIPITATE_LABEL_FONT_SIZE = 10;
+const FIXED_PRECIPITATE_RADIUS = 25;
+const FIXED_ION_RADIUS = 15;
+const FIXED_ION_FONT_SIZE = 11;
+
+const Foo = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<number | null>(null);
+  const [activeCompounds, setActiveCompounds] = useState<CompoundState[]>([]);
+  const [simulationIons, setSimulationIons] = useState<Ion[]>([]);
+  const [precipitates, setPrecipitates] = useState<Precipitate[]>([]);
+  const [isRunning, setIsRunning] = useState(false);
+  const [containerSize, setContainerSize] = useState({
+    width: 600,
+    height: 400,
+  });
+
+  // Effect to update container size
+  useEffect(() => {
+    const updateSize = () => {
+      if (containerRef.current) {
+        setContainerSize({
+          width: Math.min(800, containerRef.current.clientWidth),
+          height: 400,
+        });
+      }
+    };
+    window.addEventListener("resize", updateSize);
+    updateSize();
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+
+  // 캔버스 해상도 선명하게: devicePixelRatio 적용
+  useEffect(() => {
+    const dpr = window.devicePixelRatio || 1;
+    const canvas = canvasRef.current;
+    if (canvas) {
+      // 실제 픽셀 해상도 조정
+      canvas.width = containerSize.width * dpr;
+      canvas.height = containerSize.height * dpr;
+      // CSS 크기는 논리적 크기로 유지
+      canvas.style.width = `${containerSize.width}px`;
+      canvas.style.height = `${containerSize.height}px`;
+      // 컨텍스트 스케일 적용
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // reset
+        ctx.scale(dpr, dpr);
+      }
+    }
+  }, [containerSize]);
+
+  // Toggle simulation
+  const toggleSimulation = () => {
+    setIsRunning((prev) => !prev);
+  };
+
+  // Reset simulation
+  const resetSimulation = useCallback(() => {
+    setIsRunning(false);
+    setActiveCompounds([]);
+    setSimulationIons([]);
+    setPrecipitates([]);
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d")!;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#E6F7FF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+  }, []);
+
+  // 컴포넌트 마운트 시 초기 캔버스 배경 그리기
+  useEffect(() => {
+    resetSimulation();
+  }, [resetSimulation]);
+
+  // Change compound amount
+  const changeCompoundAmount = (compoundName: string, delta: number): void => {
+    if (isRunning) return;
+    setActiveCompounds((prev) => {
+      const existingCompoundIndex = prev.findIndex(
+        (c) => c.name === compoundName
+      );
+      let newAmount = delta;
+      if (existingCompoundIndex !== -1) {
+        newAmount = prev[existingCompoundIndex].amount + delta;
+      }
+      if (newAmount <= 0) {
+        return prev.filter((c) => c.name !== compoundName);
+      }
+      if (existingCompoundIndex !== -1) {
+        const updatedCompounds = [...prev];
+        updatedCompounds[existingCompoundIndex] = {
+          ...updatedCompounds[existingCompoundIndex],
+          amount: newAmount,
+        };
+        return updatedCompounds;
+      } else if (delta > 0) {
+        return [...prev, { name: compoundName, amount: newAmount }];
+      }
+      return prev;
+    });
+  };
+
+  // Effect to generate ions
+  useEffect(() => {
+    if (isRunning) return;
+    if (activeCompounds.length === 0) {
+      setSimulationIons([]);
+      setPrecipitates([]);
+      return;
+    }
+
+    let newIons: Ion[] = [];
+    activeCompounds.forEach(({ name: compoundName, amount }) => {
+      const compound = compounds[compoundName];
+      if (!compound) return;
+
+      const cationType = compound.cation;
+      const anionType = compound.anion;
+      const cationInfo = ions[cationType];
+      const anionInfo = ions[anionType];
+
+      if (!cationInfo || !anionInfo) return; // Skip if ion info is missing
+
+      const cationCountMultiplier = Math.abs(anionInfo.charge);
+      const anionCountMultiplier = Math.abs(cationInfo.charge);
+      const totalIonPairs = amount * BASE_IONS_PER_UNIT;
+
+      for (let i = 0; i < totalIonPairs; i++) {
+        for (let j = 0; j < cationCountMultiplier; j++) {
+          newIons.push({
+            id: `${compoundName}-${cationType}-${i}-${j}-${Math.random()}`,
+            type: cationType,
+            x:
+              Math.random() * (containerSize.width - FIXED_ION_RADIUS * 2) +
+              FIXED_ION_RADIUS,
+            y:
+              Math.random() * (containerSize.height - FIXED_ION_RADIUS * 2) +
+              FIXED_ION_RADIUS,
+            vx: (Math.random() - 0.5) * 1,
+            vy: (Math.random() - 0.5) * 1,
+            radius: FIXED_ION_RADIUS,
+            color: cationInfo.color,
+            charge: cationInfo.charge,
+            compound: compoundName,
+          });
+        }
+
+        for (let j = 0; j < anionCountMultiplier; j++) {
+          newIons.push({
+            id: `${compoundName}-${anionType}-${i}-${j}-${Math.random()}`,
+            type: anionType,
+            x:
+              Math.random() * (containerSize.width - FIXED_ION_RADIUS * 2) +
+              FIXED_ION_RADIUS,
+            y:
+              Math.random() * (containerSize.height - FIXED_ION_RADIUS * 2) +
+              FIXED_ION_RADIUS,
+            vx: (Math.random() - 0.5) * 1,
+            vy: (Math.random() - 0.5) * 1,
+            radius: FIXED_ION_RADIUS,
+            color: anionInfo.color,
+            charge: anionInfo.charge,
+            compound: compoundName,
+          });
+        }
+      }
+    });
+
+    setSimulationIons(newIons);
+    setPrecipitates([]);
+  }, [activeCompounds, containerSize, isRunning]);
+
+  // 앙금 생성 가능 여부 확인하는 함수
+  const checkPrecipitateFormation = (
+    cation: string,
+    anion: string,
+    ionCollection: Ion[]
+  ): any => {
+    for (const [key, info] of Object.entries(precipitateInfo)) {
+      if (info.cation === cation && info.anion === anion) {
+        // 이온 개수 확인
+        const cationCount = ionCollection.filter(
+          (ion) => ion.type === cation
+        ).length;
+        const anionCount = ionCollection.filter(
+          (ion) => ion.type === anion
+        ).length;
+
+        if (cationCount >= info.cationCount && anionCount >= info.anionCount) {
+          return {
+            name: key,
+            color: info.color,
+            colorName: info.colorName,
+            cationCount: info.cationCount,
+            anionCount: info.anionCount,
+          };
+        }
+      }
+    }
+    return null;
+  };
+
+  // Animation loop effect
+  useEffect(() => {
+    if (!isRunning || !canvasRef.current) {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+      return;
+    }
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d")!;
+    const canvasHeight = canvas.height;
+    const canvasWidth = canvas.width;
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.fillStyle = "#E6F7FF";
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+      let currentIons = [...simulationIons];
+      let currentPrecipitates = [...precipitates];
+      let ionsToRemove = new Set();
+
+      // --- Precipitate Movement & Drawing ---
+      currentPrecipitates.forEach((p) => {
+        // Movement logic
+        if (!p.settled) {
+          p.vy += GRAVITY;
+          p.y += p.vy;
+          p.x += p.vx;
+
+          if (p.y + FIXED_PRECIPITATE_RADIUS >= canvasHeight) {
+            p.y = canvasHeight - FIXED_PRECIPITATE_RADIUS;
+            p.vy = 0;
+            p.vx *= FRICTION;
+            p.settled = true;
+          }
+
+          if (
+            p.x + FIXED_PRECIPITATE_RADIUS > canvasWidth ||
+            p.x - FIXED_PRECIPITATE_RADIUS < 0
+          ) {
+            p.vx *= -0.5;
+            p.x = Math.max(
+              FIXED_PRECIPITATE_RADIUS,
+              Math.min(canvasWidth - FIXED_PRECIPITATE_RADIUS, p.x)
+            );
+          }
+        } else {
+          p.vx *= FRICTION;
+          if (Math.abs(p.vx) < 0.1) p.vx = 0;
+          p.x += p.vx;
+          p.x = Math.max(
+            FIXED_PRECIPITATE_RADIUS,
+            Math.min(canvasWidth - FIXED_PRECIPITATE_RADIUS, p.x)
+          );
+
+          currentPrecipitates.forEach((otherP) => {
+            if (p !== otherP && otherP.settled) {
+              const dist = calculateDistance(p, otherP);
+              const overlap = FIXED_PRECIPITATE_RADIUS * 2 - dist;
+
+              if (overlap > 0) {
+                const angle = Math.atan2(p.y - otherP.y, p.x - otherP.x);
+                const moveX =
+                  (overlap / 2) * Math.cos(angle) ||
+                  (Math.random() - 0.5) * 0.5;
+                p.x += moveX;
+                otherP.x -= moveX;
+                p.x = Math.max(
+                  FIXED_PRECIPITATE_RADIUS,
+                  Math.min(canvasWidth - FIXED_PRECIPITATE_RADIUS, p.x)
+                );
+                otherP.x = Math.max(
+                  FIXED_PRECIPITATE_RADIUS,
+                  Math.min(canvasWidth - FIXED_PRECIPITATE_RADIUS, otherP.x)
+                );
+              }
+            }
+          });
+        }
+
+        // Draw precipitate circle
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, FIXED_PRECIPITATE_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#444444";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Draw Labels on Precipitate
+        const textColor = getContrastYIQ(p.color);
+        ctx.fillStyle = textColor;
+        const fontSize = Math.min(
+          PRECIPITATE_LABEL_FONT_SIZE,
+          FIXED_PRECIPITATE_RADIUS * 0.6
+        );
+
+        // Use drawFormattedText for precipitate name
+        drawFormattedText(ctx, p.name, p.x, p.y - fontSize * 0.6, fontSize);
+
+        // Draw Color Name (simple text)
+        ctx.font = `${fontSize * 0.9}px Arial`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`(${p.colorName})`, p.x, p.y + fontSize * 0.7);
+      });
+
+      // --- Ion Movement and Collision Handling ---
+      for (let i = 0; i < currentIons.length; i++) {
+        const ion = currentIons[i];
+        if (ionsToRemove.has(ion.id)) continue;
+
+        // 벽과의 충돌 및 이동
+        if (
+          ion.x + FIXED_ION_RADIUS > canvasWidth ||
+          ion.x - FIXED_ION_RADIUS < 0
+        ) {
+          ion.vx *= -1;
+          ion.x = Math.max(
+            FIXED_ION_RADIUS,
+            Math.min(canvasWidth - FIXED_ION_RADIUS, ion.x)
+          );
+        }
+
+        if (
+          ion.y + FIXED_ION_RADIUS > canvasHeight ||
+          ion.y - FIXED_ION_RADIUS < 0
+        ) {
+          ion.vy *= -1;
+          ion.y = Math.max(
+            FIXED_ION_RADIUS,
+            Math.min(canvasHeight - FIXED_ION_RADIUS, ion.y)
+          );
+        }
+
+        ion.x += ion.vx;
+        ion.y += ion.vy;
+
+        // 다른 이온과의 충돌 확인
+        for (let j = i + 1; j < currentIons.length; j++) {
+          const ion2 = currentIons[j];
+          if (ionsToRemove.has(ion2.id)) continue;
+
+          // 서로 다른 전하를 가진 이온 간의 충돌만 처리
+          if (ion.charge * ion2.charge < 0) {
+            const distance = calculateDistance(ion, ion2);
+
+            // 충돌 발생
+            if (distance < FIXED_ION_RADIUS * 2) {
+              // 양이온과 음이온 구분
+              const cation = ion.charge > 0 ? ion : ion2;
+              const anion = ion.charge < 0 ? ion : ion2;
+
+              // 주변에서 필요한 추가 이온 검색
+              const nearbyIons = [cation, anion];
+
+              // 앙금 정보 확인
+              const precInfo = precipitateInfo[`PbI2`]; // PbI2 정보 직접 참조 (디버깅용)
+              if (precInfo && cation.type === "Pb2+" && anion.type === "I-") {
+                console.log(
+                  "PbI2 충돌 감지:",
+                  precInfo.cation,
+                  precInfo.anion,
+                  precInfo.cationCount,
+                  precInfo.anionCount
+                );
+
+                // 실제 필요한 이온 수 확인
+                const neededCations = 1; // Pb2+는 1개 필요
+                const neededAnions = 2; // I-는 2개 필요
+
+                // 추가 음이온(I-) 찾기
+                if (anion.type === "I-") {
+                  const missingAnions = neededAnions - 1; // 이미 하나는 충돌했음
+
+                  // 주변 I- 이온 검색
+                  for (
+                    let k = 0;
+                    k < currentIons.length && missingAnions > 0;
+                    k++
+                  ) {
+                    const nearbyIon = currentIons[k];
+                    if (
+                      nearbyIon.id !== anion.id &&
+                      nearbyIon.type === "I-" &&
+                      !ionsToRemove.has(nearbyIon.id) &&
+                      calculateDistance(cation, nearbyIon) <
+                        FIXED_ION_RADIUS * 5
+                    ) {
+                      nearbyIons.push(nearbyIon);
+                      console.log("추가 I- 이온 발견");
+                      break; // 하나만 더 필요함
+                    }
+                  }
+                }
+
+                // 충분한 이온이 모였는지 확인
+                if (nearbyIons.length >= 3) {
+                  // Pb2+ 1개 + I- 2개 = 총 3개
+                  console.log("PbI2 앙금 생성 조건 충족!");
+
+                  // 이온 위치 평균 계산
+                  let sumX = 0,
+                    sumY = 0,
+                    sumVx = 0,
+                    sumVy = 0;
+                  nearbyIons.forEach((ion) => {
+                    sumX += ion.x;
+                    sumY += ion.y;
+                    sumVx += ion.vx;
+                    sumVy += ion.vy;
+                    ionsToRemove.add(ion.id);
+                  });
+
+                  // 앙금 생성
+                  currentPrecipitates.push({
+                    id: `PbI2-${Date.now()}`,
+                    type: "PbI2",
+                    charge: 0,
+                    compound: "PbI2",
+                    x: sumX / nearbyIons.length,
+                    y: sumY / nearbyIons.length,
+                    vx: sumVx / nearbyIons.length / 2,
+                    vy: sumVy / nearbyIons.length / 2,
+                    radius: FIXED_PRECIPITATE_RADIUS,
+                    color: "#FFFF00", // 노란색
+                    name: "PbI2",
+                    colorName: "노란색",
+                    settled: false,
+                  });
+                  continue; // 다음 이온으로
+                }
+              }
+
+              // 다른 앙금들에 대해서도 검사
+              let precipitateResult = null;
+              for (const [name, info] of Object.entries(precipitateInfo)) {
+                if (info.cation === cation.type && info.anion === anion.type) {
+                  // 추가 이온이 필요한지 확인
+                  const neededCations = info.cationCount;
+                  const neededAnions = info.anionCount;
+                  const hasEnoughCations = neededCations === 1;
+                  const hasEnoughAnions = neededAnions === 1;
+
+                  // 둘 다 1개씩만 필요한 일반적인 경우
+                  if (hasEnoughCations && hasEnoughAnions) {
+                    precipitateResult = {
+                      name,
+                      color: info.color,
+                      colorName: info.colorName,
+                    };
+                    break;
+                  }
+
+                  // 더 많은 이온이 필요한 경우 (예: PbI2, Ag2S)
+                  // 여기서는 간단하게 구현하므로 생략
+                }
+              }
+
+              // 앙금 생성 가능한 경우
+              if (precipitateResult) {
+                // 앙금 생성
+                currentPrecipitates.push({
+                  id: `prec-${Date.now()}`,
+                  type: precipitateResult.name,
+                  charge: 0,
+                  compound: precipitateResult.name,
+                  x: (cation.x + anion.x) / 2,
+                  y: (cation.y + anion.y) / 2,
+                  vx: (cation.vx + anion.vx) / 2,
+                  vy: (cation.vy + anion.vy) / 2,
+                  radius: FIXED_PRECIPITATE_RADIUS,
+                  color: precipitateResult.color,
+                  name: precipitateResult.name,
+                  colorName: precipitateResult.colorName,
+                  settled: false,
+                });
+
+                // 사용된 이온 제거
+                ionsToRemove.add(cation.id);
+                ionsToRemove.add(anion.id);
+              } else {
+                // 앙금이 형성되지 않는 경우 (일반 충돌)
+                // 충돌 반발력 계산
+                const angle = Math.atan2(ion2.y - ion.y, ion2.x - ion.x);
+                const overlap = FIXED_ION_RADIUS * 2 - distance;
+                const moveX = (overlap / 2) * Math.cos(angle);
+                const moveY = (overlap / 2) * Math.sin(angle);
+
+                // 위치 조정
+                ion.x -= moveX;
+                ion.y -= moveY;
+                ion2.x += moveX;
+                ion2.y += moveY;
+
+                // 속도 교환
+                const tempVx = ion.vx;
+                const tempVy = ion.vy;
+                ion.vx = ion2.vx;
+                ion.vy = ion2.vy;
+                ion2.vx = tempVx;
+                ion2.vy = tempVy;
+              }
+            }
+          }
+        }
+      }
+
+      // Filter out reacted ions and draw remaining
+      let nextIons = currentIons.filter((ion) => !ionsToRemove.has(ion.id));
+      nextIons.forEach((ion) => {
+        // Draw Ion Circle
+        ctx.fillStyle = ion.color;
+        ctx.beginPath();
+        ctx.arc(ion.x, ion.y, FIXED_ION_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw Ion Label
+        const textColor = getContrastYIQ(ion.color);
+        ctx.fillStyle = textColor;
+
+        // Use drawFormattedText for ion type
+        drawFormattedText(ctx, ion.type, ion.x, ion.y, FIXED_ION_FONT_SIZE);
+      });
+
+      // Update state
+      setSimulationIons(nextIons);
+      setPrecipitates(currentPrecipitates);
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+    };
+  }, [isRunning, simulationIons, precipitates]);
+
+  // Get compound amount helper
+  const getCompoundAmount = (compoundName: string): number => {
+    const compound = activeCompounds.find((c) => c.name === compoundName);
+    return compound ? compound.amount : 0;
+  };
+
+  // JSX Rendering
+  return (
+    <div className="flex flex-col w-full max-w-4xl mx-auto bg-gray-100 p-4 rounded-lg shadow-md font-sans">
+      <h1 className="text-xl sm:text-2xl font-bold text-center mb-4 text-gray-800">
+        앙금 생성 반응 실험
+      </h1>
+      <p className="text-center text-sm text-gray-600 mb-4">
+        (Precipitation Reaction Simulation)
+      </p>
+
+      {/* Canvas container */}
+      <div
+        ref={containerRef}
+        className="relative bg-blue-50 rounded-lg overflow-hidden border-2 border-gray-300 mb-4 shadow-inner"
+        style={{ width: "100%", height: `${containerSize.height}px` }}
+      >
+        <canvas
+          ref={canvasRef}
+          width={containerSize.width}
+          height={containerSize.height}
+          className="block"
+        />
+      </div>
+
+      {/* Compound selection */}
+      <div className="mb-4 p-3 bg-white rounded-lg border border-gray-200">
+        <h2 className="text-lg font-semibold mb-2 text-gray-700">
+          1. 시약 선택 및 양 조절 (Select Reagents & Amount)
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {Object.keys(compounds).map((compoundName) => {
+            const currentAmount = getCompoundAmount(compoundName);
+            const isActive = currentAmount > 0;
+            return (
+              <div
+                key={compoundName}
+                className={`p-2 border rounded-md flex flex-col items-center justify-between transition-colors duration-200 ${
+                  isActive
+                    ? "bg-blue-100 border-blue-300"
+                    : "bg-white border-gray-200"
+                }`}
+              >
+                <div
+                  className={`font-medium text-xs sm:text-sm mb-1 ${
+                    isActive ? "text-blue-800" : "text-gray-800"
+                  }`}
+                >
+                  <ChemFormula formula={compoundName} />
+                </div>
+                <div className="flex items-center space-x-1.5">
+                  <button
+                    onClick={() => changeCompoundAmount(compoundName, -1)}
+                    disabled={isRunning || currentAmount <= 0}
+                    className={`px-1.5 py-0.5 rounded text-sm font-bold ${
+                      isRunning || currentAmount <= 0
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-red-500 text-white hover:bg-red-600"
+                    }`}
+                    aria-label={`Decrease amount of ${compoundName}`}
+                  >
+                    -
+                  </button>
+                  <span
+                    className={`text-sm font-semibold w-6 text-center ${
+                      isActive ? "text-blue-900" : "text-gray-500"
+                    }`}
+                  >
+                    {currentAmount}
+                  </span>
+                  <button
+                    onClick={() => changeCompoundAmount(compoundName, 1)}
+                    disabled={isRunning}
+                    className={`px-1.5 py-0.5 rounded text-sm font-bold ${
+                      isRunning
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-green-500 text-white hover:bg-green-600"
+                    }`}
+                    aria-label={`Increase amount of ${compoundName}`}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="flex justify-center items-center space-x-4 mb-4">
+        <button
+          onClick={toggleSimulation}
+          disabled={activeCompounds.length === 0}
+          className={`px-5 py-2 rounded-lg font-semibold text-white transition-colors duration-200 shadow ${
+            isRunning
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-green-500 hover:bg-green-600"
+          } ${
+            activeCompounds.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          {isRunning ? "정지 (Stop)" : "시작 (Start)"}
+        </button>
+        <button
+          onClick={resetSimulation}
+          className="px-5 py-2 bg-gray-500 text-white rounded-lg font-semibold hover:bg-gray-600 transition-colors duration-200 shadow"
+        >
+          초기화 (Reset)
+        </button>
+      </div>
+
+      {/* Precipitate List */}
+      <div className="mb-4 p-3 bg-white rounded-lg border border-gray-200">
+        <h3 className="text-lg font-semibold mb-2 text-gray-700">
+          생성된 앙금 (Formed Precipitates)
+        </h3>
+        <div className="flex flex-wrap gap-2 min-h-[30px] items-center">
+          {Array.from(new Set(precipitates.map((p) => p.name))).map(
+            (name, index) => {
+              const precipitateSample = precipitates.find(
+                (p) => p.name === name
+              );
+              return (
+                <div
+                  key={index}
+                  className="bg-gray-200 p-2 rounded border border-gray-300 text-sm font-medium text-gray-800 shadow-sm flex items-center space-x-2"
+                >
+                  <ChemFormula formula={name} />
+                  <span>
+                    ({precipitateSample?.colorName || "색상 정보 없음"})
+                  </span>
+                  <span
+                    className="inline-block w-3 h-3 rounded-full border border-gray-400"
+                    style={{
+                      backgroundColor: precipitateSample?.color || "#FFFFFF",
+                    }}
+                  ></span>
+                </div>
+              );
+            }
+          )}
+          {precipitates.length === 0 &&
+            simulationIons.length > 0 &&
+            isRunning && (
+              <p className="text-gray-500 text-sm italic">
+                이온들이 반응 중입니다... (Ions are reacting...)
+              </p>
+            )}
+          {precipitates.length === 0 &&
+            (!isRunning || simulationIons.length === 0) && (
+              <p className="text-gray-500 text-sm italic">
+                현재 생성된 앙금이 없습니다. (No precipitates formed yet.)
+              </p>
+            )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+render(<Foo />)
