@@ -411,6 +411,9 @@ const DEFAULT_ACTIVE_COMPOUNDS: CompoundState[] = [
 ];
 
 export function Canvas({ temperature = 25 }: { temperature?: number }) {
+  if (temperature == 0) {
+    temperature = 0.1;
+  }
   const speed = temperature / 10;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
