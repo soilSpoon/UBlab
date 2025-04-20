@@ -219,7 +219,7 @@ export function Solid() {
                       .replace("```", "");
 
                     console.log(query, correctedResult);
-                    if (result) {
+                    if (correctedResult) {
                       setSettings(JSON.parse(correctedResult));
                     }
 
