@@ -1,7 +1,4 @@
 import { useState, useEffect, useRef, useCallback, FC } from "react";
-import code from "./code.txt?raw";
-
-console.log(code);
 
 // 타입/인터페이스 정의
 interface CompoundState {
@@ -270,58 +267,52 @@ function drawFormattedText(
   y: number,
   baseFontSize: number
 ): void {
-  ctx.save(); // Save current context state
+  ctx.save();
   ctx.textAlign = "center";
-  ctx.textBaseline = "middle"; // Base alignment
+  ctx.textBaseline = "middle";
 
-  const subFontSize = baseFontSize * 0.7; // Font size for sub/superscripts
+  const subFontSize = baseFontSize * 0.7;
   const superFontSize = baseFontSize * 0.7;
-  const subOffset = baseFontSize * 0.3; // Vertical offset for subscripts
-  const superOffset = -baseFontSize * 0.4; // Vertical offset for superscripts
+  const subOffset = baseFontSize * 0.3;
+  const superOffset = -baseFontSize * 0.4;
 
-  let currentX = x; // Start X position (will be adjusted for centered text later)
-  const segments = []; // Store segments to calculate total width
+  let currentX = x;
+  const segments = [];
 
-  // Simple parsing: Look for numbers possibly following letters (subscript)
-  // or charge signs possibly following numbers/letters (superscript)
-  // This is a simplified parser and might have edge cases.
-  const regex = /([A-Za-z]+)(\d+)|(\d+)([+\-])|([+\-])/g;
+  // 개선된 파서: 아래첨자(숫자), 윗첨자(+, -, 2+, 3-, +, - 등)
+  // 예: Ca2+, SO4^2-, Cl-, Pb2+
+  // 1. 원자기호+숫자(아래첨자)
+  // 2. (숫자)?+/- (윗첨자)
+  // 3. 나머지 일반 텍스트
+  const regex = /([A-Za-z()]+)(\d+)|((\d+)?[+-])|([A-Za-z]+)/g;
   let lastIndex = 0;
   let match;
 
   while ((match = regex.exec(text)) !== null) {
-    // Add preceding normal text
     if (match.index > lastIndex) {
       segments.push({
         type: "normal",
         text: text.substring(lastIndex, match.index),
       });
     }
-
     if (match[1] && match[2]) {
-      // Letter(s) followed by number (potential subscript) e.g., Cl2, SO4
+      // 원자기호+숫자 (아래첨자)
       segments.push({ type: "normal", text: match[1] });
       segments.push({ type: "subscript", text: match[2] });
-    } else if (match[3] && match[4]) {
-      // Number followed by charge sign (superscript) e.g., 2+
-      segments.push({ type: "normal", text: match[3] }); // Keep number normal size for charge like 2+
-      segments.push({ type: "superscript", text: match[4] });
+    } else if (match[3]) {
+      // (숫자)?+/- (윗첨자)
+      segments.push({ type: "superscript", text: match[3] });
     } else if (match[5]) {
-      // Lone charge sign (superscript) e.g., + or -
-      segments.push({ type: "superscript", text: match[5] });
-    } else {
-      // Fallback for unparsed parts (shouldn't happen often with this regex)
-      segments.push({ type: "normal", text: match[0] });
+      // 일반 텍스트
+      segments.push({ type: "normal", text: match[5] });
     }
     lastIndex = regex.lastIndex;
   }
-
-  // Add any remaining normal text
   if (lastIndex < text.length) {
     segments.push({ type: "normal", text: text.substring(lastIndex) });
   }
 
-  // Calculate total width for centering
+  // 전체 길이 계산
   let totalWidth = 0;
   segments.forEach((segment) => {
     if (segment.type === "subscript") {
@@ -329,15 +320,13 @@ function drawFormattedText(
     } else if (segment.type === "superscript") {
       ctx.font = `${superFontSize}px Arial`;
     } else {
-      ctx.font = `bold ${baseFontSize}px Arial`; // Bold for normal parts
+      ctx.font = `bold ${baseFontSize}px Arial`;
     }
     totalWidth += ctx.measureText(segment.text).width;
   });
-
-  // Adjust starting X for centering
   currentX = x - totalWidth / 2;
 
-  // Draw segments
+  // 그리기
   segments.forEach((segment) => {
     let segmentY = y;
     if (segment.type === "subscript") {
@@ -347,17 +336,16 @@ function drawFormattedText(
       ctx.font = `${superFontSize}px Arial`;
       segmentY += superOffset;
     } else {
-      ctx.font = `bold ${baseFontSize}px Arial`; // Bold for normal parts
+      ctx.font = `bold ${baseFontSize}px Arial`;
     }
     ctx.fillText(
       segment.text,
       currentX + ctx.measureText(segment.text).width / 2,
       segmentY
-    ); // Draw centered within its segment space
-    currentX += ctx.measureText(segment.text).width; // Move X for the next segment
+    );
+    currentX += ctx.measureText(segment.text).width;
   });
-
-  ctx.restore(); // Restore context state
+  ctx.restore();
 }
 
 // Function to calculate distance
@@ -408,6 +396,8 @@ export function Canvas({ temperature = 25 }: { temperature?: number }) {
 
   const speed = temperature / 10;
 
+  console.log(speed);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
@@ -416,7 +406,7 @@ export function Canvas({ temperature = 25 }: { temperature?: number }) {
   );
   const [simulationIons, setSimulationIons] = useState<Ion[]>([]);
   const [precipitates, setPrecipitates] = useState<Precipitate[]>([]);
-  const isRunning = useState(true);
+  const [isRunning] = useState(true);
   const [containerSize, setContainerSize] = useState({
     width: 690,
     height: 263,
