@@ -49,6 +49,9 @@ export async function main(
         system: [
           { text: "입력 받은 쿼리에 대해서 원본 설정(JSON)을 수정해주세요." },
           { text: "출력 형태는 오직 JSON 형식으로 제공됩니다." },
+          {
+            text: "출력 시 코드 블럭이나 JSON 외에는 있으면 안 돼. 출력값 자체가 JSON.parse 가능한 대상이어야 해.",
+          },
           { text: '입력 형태 예시: { "temperature": 25 }' },
           { text: '출력 형태 예시: { "temperature": 100 }' },
           { text: `원본 설정: ${settings}` },
