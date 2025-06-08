@@ -396,8 +396,6 @@ export function Canvas({ temperature = 25 }: { temperature?: number }) {
 
   const speed = temperature / 10;
 
-  console.log(speed);
-
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);

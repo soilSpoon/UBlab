@@ -291,7 +291,7 @@ export function Solid() {
 
               {/* Pagination dots */}
               <div className="inline-flex items-center gap-[9px] absolute top-[334px] left-[318px]">
-                {dots.map((dot, index) => (
+                {dots.map((_dot, index) => (
                   <div
                     key={index}
                     className={`relative w-2.5 h-2.5 rounded-[5px] ${
