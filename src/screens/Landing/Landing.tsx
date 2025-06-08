@@ -35,20 +35,19 @@ export function Landing() {
 
             <div className="flex gap-5 w-full items-center justify-center">
               <Button
-                onClick={goFire}
-                className="px-[47px] py-[15px] bg-[#ff6e39] hover:bg-[#ff6e39]/90 rounded-[30px] h-auto"
-              >
-                <span className="font-bold text-white text-2xl leading-[38.4px] tracking-normal whitespace-nowrap">
-                  불꽃 반응 실험실
-                </span>
-              </Button>
-
-              <Button
                 onClick={goSolid}
                 className="px-[47px] py-[15px] bg-[#ffc300] hover:bg-[#ffc300]/90 rounded-[30px] h-auto"
               >
                 <span className="font-bold text-white text-2xl leading-[38.4px] tracking-normal whitespace-nowrap">
                   앙금 생성 실험실
+                </span>
+              </Button>
+              <Button
+                onClick={goFire}
+                className="px-[47px] py-[15px] bg-[#ff6e39] hover:bg-[#ff6e39]/90 rounded-[30px] h-auto"
+              >
+                <span className="font-bold text-white text-2xl leading-[38.4px] tracking-normal whitespace-nowrap">
+                  불꽃 반응 실험실
                 </span>
               </Button>
             </div>
